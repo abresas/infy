@@ -75,6 +75,7 @@ class InfApp(App):
                 results_text += "\n"
             if len(lines[i].strip()) == 0:  # avoid "0" on empty lines
                 continue
+            result = result.magnitude
             if int(result) == float(result):
                 result = int(result)  # avoid .0 on results
             else:

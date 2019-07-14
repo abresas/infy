@@ -1,6 +1,24 @@
 from parsimonious.nodes import NodeVisitor
 from grammar import find_text
+from pint import UnitRegistry
 
+ureg = UnitRegistry()
+Q_ = ureg.Quantity
+
+
+def same_dimension(l):
+    unit = None
+    for x in l:
+        if x.__class__.__name__ == "Quantity":
+            unit = str(x.units)
+    if unit is None:
+        return l
+    for i, x in enumerate(l):
+        if x.__class__.__name__ == "Quantity":
+            l[i] = x.to(unit)
+        else:
+            l[i] = Q_(x, unit)
+    return l
 
 class Evaluator(NodeVisitor):
     def __init__(self):
@@ -37,6 +55,12 @@ class Evaluator(NodeVisitor):
     def visit_calculate(self, node, visited_children):
         return visited_children[0]
 
+    def visit_change_unit(self, node, visited_children):
+        if visited_children[1]:
+            return visited_children[0].to(visited_children[1].units)
+        else:
+            return visited_children[0]
+
     def visit_expr(self, node, visited_children):
         return visited_children[0]
 
@@ -44,15 +68,19 @@ class Evaluator(NodeVisitor):
         return visited_children[0]
 
     def visit_add(self, node, visited_children):
+        visited_children = same_dimension(visited_children)
         return visited_children[0] + visited_children[4]
 
     def visit_sub(self, node, visited_children):
+        visited_children = same_dimension(visited_children)
         return visited_children[0] - visited_children[4]
 
     def visit_mul(self, node, visited_children):
+        visited_children = same_dimension(visited_children)
         return visited_children[0] * visited_children[4]
 
     def visit_div(self, node, visited_children):
+        visited_children = same_dimension(visited_children)
         return visited_children[0] / visited_children[4]
 
     def visit_numeric(self, node, visited_children):
@@ -66,6 +94,22 @@ class Evaluator(NodeVisitor):
 
     def visit_factor(self, node, visited_children):
         return visited_children[0]
+
+    def visit_lit(self, node, visited_children):
+        if visited_children[1] != 0:
+            return visited_children[1] * visited_children[0]
+        else:
+            return visited_children[0]
+
+    def visit_units(self, node, visited_children):
+        if node.text.strip()[:3] == "per":
+            text = "1 " + node.text
+        else:
+            text = node.text
+        return Q_(text)
+
+    def visit_in_unit(self, node, visited_children):
+        return visited_children[3]
 
     def visit_val(self, node, visited_children):
         return visited_children[0]
