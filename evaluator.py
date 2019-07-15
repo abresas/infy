@@ -9,8 +9,9 @@ Q_ = ureg.Quantity
 def same_dimension(l):
     unit = None
     for x in l:
-        if x.__class__.__name__ == "Quantity":
+        if x.__class__.__name__ == "Quantity" and str(x.units) != 'dimensionless':
             unit = str(x.units)
+            break
     if unit is None:
         return l
     for i, x in enumerate(l):
@@ -80,8 +81,12 @@ class Evaluator(NodeVisitor):
         return visited_children[0] * visited_children[4]
 
     def visit_div(self, node, visited_children):
+        print('dividing', visited_children)
         visited_children = same_dimension(visited_children)
-        return visited_children[0] / visited_children[4]
+        print('samed', visited_children)
+        res = visited_children[0] / visited_children[4]
+        print('res', res)
+        return res
 
     def visit_numeric(self, node, visited_children):
         return visited_children[0]
@@ -90,7 +95,12 @@ class Evaluator(NodeVisitor):
         if node.text in self.variables:
             return self.variables[node.text]
         else:
-            return 0
+            try:
+                print("trying variable to dimension", node.text)
+                return Q_(node.text)
+            except Exception as e:
+                print("to dimension failed with", e)
+                return 0
 
     def visit_factor(self, node, visited_children):
         return visited_children[0]
