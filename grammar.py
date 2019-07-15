@@ -4,13 +4,14 @@ grammar = Grammar(
     r"""
     doc = multiline / line
     multiline = line "\n" doc
-    line = (assign eol) / (calculate eol) / (text calculate eol) / eol
+    line = (text assign eol) / (assign eol) / (multi_expr eol) / eol
     assign = ws? var ws? "=" ws? expr
-    text = !calculate (ws / non_ws) text?
-    calculate = change_unit / operation / lit
+    text = !assign (ws / non_ws) text?
     change_unit = (operation / lit) in_unit
     operation = add / sub / mul / div
-    expr = operation / val
+    multi_expr = expr (ws multi_expr)?
+    expr = change_unit / operation / val
+    calculate = operation / lit
     add = factor ws? "+" ws? expr
     sub = factor ws? "-" ws? expr
     factor = mul / div / val
@@ -24,7 +25,7 @@ grammar = Grammar(
     int = ~"[0-9]+"
     float = ~"[0-9]+.[0-9]+"
     perc = number ws? "%"
-    in_unit = (ws "in" ws units)
+    in_unit = (ws ("in" / "to") ws units)
     units = (unit ws units) / per_unit / unit
     per_unit = (unit ws "per" ws units) / (unit ws? "/" ws? units) / (ws? "per" ws units)
     unit = scale? (angle / solid_angle / neper / information / length / mass / time / temperature / area / volume / liquid_volume / other_volume / short_unit) "s"?
@@ -98,8 +99,23 @@ def find(node, target_type):
     return None
 
 
+def find_all(node, target_type):
+    nodes = []
+    if node.expr_name == target_type:
+        nodes.append(node)
+    for c in node.children:
+        r = find_all(c, target_type)
+        for n in r:
+            nodes.append(n)
+    return nodes
+
+
 def find_text(node, target_type):
     r = find(node, target_type)
     if r is None:
         return None
     return r.text
+
+
+def find_all_text(node, target_type):
+    return [node.text for node in find_all(node, target_type)]

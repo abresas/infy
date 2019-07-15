@@ -1,18 +1,18 @@
-from grammar import grammar, find_text
+from grammar import grammar, find_text, find_all_text
 from evaluator import Evaluator, Q_
 
 ev = Evaluator()
 
 ast = grammar.parse("make")
-assert(find_text(ast, "eol") == "make")
+assert(find_text(ast, "var") == "make")
 assert(ev.eval(ast)[0] == 0)
 
 ast = grammar.parse("5")
-assert(find_text(ast, "calculate") == "5")
+assert(find_text(ast, "expr") == "5")
 assert(ev.eval(ast)[0] == 5)
 
 ast = grammar.parse("bar + 5")
-assert(find_text(ast, "calculate") == "bar + 5")
+assert(find_text(ast, "expr") == "bar + 5")
 assert(find_text(ast, "add") == "bar + 5")
 assert(find_text(ast, "var") == "bar")
 assert(find_text(ast, "int") == "5")
@@ -35,17 +35,18 @@ assert(ev.eval(ast)[0] == 400)
 assert(ev.get("rent") == 400)
 
 ast = grammar.parse("bar + 5 per month")
-assert(find_text(ast, "calculate") == "bar + 5 per month")
+assert(find_text(ast, "expr") == "bar + 5 per month")
 ev.set("bar", 5)
 assert(ev.eval(ast)[0] == Q_(10, '1 / month'))
 
 ast = grammar.parse("my rent is bar + 5")
-assert(find_text(ast, "calculate") == "bar + 5")
+assert(find_all_text(ast, "expr")[3] == "bar + 5")
+ev.reset()
 ev.set("bar", 5)
 assert(ev.eval(ast)[0] == 10)
 
 ast = grammar.parse("my rent is bar + 400 euros per month")
-assert(find_text(ast, "calculate") == "bar + 400")
+assert(find_all_text(ast, "expr")[3] == "bar + 400")
 assert(ev.eval(ast)[0] == 405)
 
 ast = grammar.parse("5 + 2 * 10")
@@ -81,5 +82,15 @@ assert(ev.eval(ast) == [Q_(500, '1 / month'), 10, 0, 15, 0, 10.0, 2.0])
 assert(ev.variables == {"foo": 10, "bar": 15, "sum": 10.0, "tax": 2.0})
 
 ast = grammar.parse("5 liters in cubic centimeters")
-#print(ev.eval(ast))
-#assert(ev.eval(ast)[0] == Q_(5000, 'centimeter ** 3'))
+epsilon = 0.0001
+assert(5000 - ev.eval(ast)[0].magnitude < epsilon)
+
+ast = grammar.parse("this year tax_rate = 20% of profits")
+print(ast)
+assert(find_text(ast, "text") == "this year")
+assert(find_text(ast, "assign") == " tax_rate = 20%")
+assert(find_text(ast, "eol") == " of profits")
+ev.reset()
+print(ev.eval(ast))
+assert(ev.eval(ast) == [Q_(0.20)])
+assert(ev.get('tax_rate') == Q_('0.20'))

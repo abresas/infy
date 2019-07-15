@@ -1,6 +1,6 @@
 from parsimonious.nodes import NodeVisitor
 from grammar import find_text
-from pint import UnitRegistry
+from pint import UnitRegistry, DimensionalityError
 
 ureg = UnitRegistry()
 Q_ = ureg.Quantity
@@ -58,9 +58,19 @@ class Evaluator(NodeVisitor):
 
     def visit_change_unit(self, node, visited_children):
         if visited_children[1]:
-            return visited_children[0].to(visited_children[1].units)
+            try:
+                return visited_children[0].to(visited_children[1].units)
+            except DimensionalityError:
+                return visited_children[0]
         else:
             return visited_children[0]
+
+    def visit_multi_expr(self, node, visited_children):
+        print('multi expr', node.text, visited_children)
+        for c in visited_children:
+            if c != 0:
+                return c
+        return visited_children[0]
 
     def visit_expr(self, node, visited_children):
         return visited_children[0]

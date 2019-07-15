@@ -25,47 +25,6 @@ evaluator = Evaluator()
 class InfApp(App):
     def text_changed(self, txt):
         results_area = self.root.resultsarea
-        """
-        results_text = ""
-        total_visible = False
-        variables = {}
-        for i, line in enumerate(txt.split("\n")):
-            if i > 0:
-                results_text += "\n"
-            lexer = CustomLexer()
-            current_variable = None
-            current_expr = AST()
-            current_value = 0
-            for item in lexer.get_tokens(line):
-                print(item)
-                if item[0] == Name.Variable:
-                    current_variable = item[1]
-                elif item[0] == Number:
-                    current_value += int(item[1])
-                    current_expr.push(item)
-                elif item[0] == Name and item[1] in variables:
-                    current_value += int(variables[item[1]])
-                    current_expr.push(item)
-                elif item[0] == Operator:
-                    current_expr.push(item)
-                elif item[0] == Keyword and item[1] == "total":
-                    current_expr.push(item)
-                    total = 0
-                    for k, v in variables.items():
-                        print("key=", k, "value=", v)
-                        total += int(v)
-                    current_value = total
-                elif item[0] == Whitespace:
-                    pass
-                else:
-                    current_variable = None # end of expression
-            if not (current_variable is None):
-                variables[current_variable] = current_value
-            results_text += str(current_value)
-        results_area.text = results_text
-        results_area.total_visible = total_visible
-        self.root.textarea.total_visible = total_visible
-        """
         doc = grammar.parse(txt)
         lines = txt.split("\n")
         results = evaluator.eval(doc)
