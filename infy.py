@@ -1,12 +1,6 @@
 from kivy.app import App
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.label import Label
-from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 from kivy.config import Config
-from lexer import CustomLexer
-
-from pygments.token import Number, Operator, Keyword, Text, Name, Whitespace
 
 from grammar import grammar
 from evaluator import Evaluator
