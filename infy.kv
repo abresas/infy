@@ -1,0 +1,31 @@
+<TextInput, CodeInput>:
+    font_size: 40
+    font_name: 'RobotoMono-Regular'
+    background_normal: 'white.png'
+    background_active: 'white.png'
+    text_height: self.height - (len(self._lines)-1) * self.line_height - 55
+    padding: 50
+    padding_y: [50, 50]
+    total_visible: False
+    canvas.after:
+        Color:
+            rgb: (.3,.3,.3)
+        Line:
+            points: [self.x, self.text_height, self.x+self.width, self.text_height] if self.total_visible else []
+    
+BoxLayout:
+    textarea: text
+    resultsarea: results
+    orientation: 'horizontal'
+    TextInput:
+        id: results
+        size_hint: (.3, 1)
+        is_focusable: False
+        halign: 'right'
+        border: (0, 5, 0, 0)
+        background_color: (.9,.9,.9,1)
+    CodeInput:
+        id: text
+        size_hint: (.7, 1)
+        on_text: app.text_changed(self.text)
+        background_color: (1,1,1,1)

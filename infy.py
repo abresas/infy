@@ -22,7 +22,7 @@ class Line(Widget):
 evaluator = Evaluator()
 
 
-class InfApp(App):
+class InfyApp(App):
     def text_changed(self, txt):
         results_area = self.root.resultsarea
         doc = grammar.parse(txt)
@@ -46,4 +46,4 @@ class InfApp(App):
 
 
 if __name__ == "__main__":
-    InfApp().run()
+    InfyApp().run()
