@@ -36,6 +36,7 @@ BoxLayout:
             size_hint: (.7, 1)
             on_text: app.text_changed(self.text)
             background_color: (1,1,1,1)
+            on_scroll_y: results.scroll_y = self.scroll_y
 
 <LoadButton, SaveButton>:
     size: 48, 48
