@@ -1,3 +1,4 @@
 kivy==1.11.0
-quantulum3==0.7.1
 parsimonious==0.8.1
+pint==0.9
+plyer==1.4.0
