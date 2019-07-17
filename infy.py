@@ -1,26 +1,16 @@
 import os
 
 from kivy.app import App
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.widget import Widget
-from kivy.uix.popup import Popup
-from kivy.uix.button import Button
 from kivy.uix.actionbar import ActionButton
 from kivy.uix.codeinput import CodeInput
-from kivy.uix.scrollview import ScrollView
-from kivy.config import Config
-from kivy.properties import ObjectProperty, ListProperty
+from kivy.properties import ListProperty
 from plyer import filechooser
 
 from grammar import grammar
 from evaluator import Evaluator
 
 
-class Line(Widget):
-    pass
-
-
-class LoadButton(ActionButton):
+class FileChooseButton(ActionButton):
     '''
     Button that triggers 'filechooser.open_file()' and processes
     the data response from filechooser Activity.
@@ -40,55 +30,29 @@ class LoadButton(ActionButton):
         '''
         self.selection = selection
 
+
+class LoadButton(FileChooseButton):
     def on_selection(self, *a, **k):
-        '''
-        Update TextInput.text after FileChoose.selection is changed
-        via FileChoose.handle_selection.
-        '''
         app = App.get_running_app()
         app.load(self.selection[0])
 
 
-class SaveButton(Button):
-    '''
-    Button that triggers 'filechooser.open_file()' and processes
-    the data response from filechooser Activity.
-    '''
-
-    selection = ListProperty([])
-
+class SaveButton(FileChooseButton):
     def on_press(self):
-        '''
-        Call plyer filechooser API to run a filechooser Activity.
-        '''
         app = App.get_running_app()
-        if app.filepath:
-            app.save(app.filepath)
+        if app.filepath is not None:
+            super(FileChooseButton, self).on_press()
         else:
-            filechooser.open_file(on_selection=self.handle_selection)
-
-    def handle_selection(self, selection):
-        '''
-        Callback function for handling the selection response from Activity.
-        '''
-        self.selection = selection
+            app.save(app.filepath)
 
     def on_selection(self, *a, **k):
-        '''
-        Update TextInput.text after FileChoose.selection is changed
-        via FileChoose.handle_selection.
-        '''
         app = App.get_running_app()
         app.save(self.selection[0])
 
 
-class CustomScrollView(ScrollView):
-    def on_scroll_y(self, y, e):
-        print('scrlv.on_scroll_y', y, e)
-
 class TypeInput(CodeInput):
     def on_cursor(self, a, b):
-        print('row', self.cursor_row, len(self._lines))
+        # fixes kivy not scrolling down when you add a new row to the bottom
         super(CodeInput, self).on_cursor(a, b)
         if self.cursor_row == len(self._lines) - 1:
             app = App.get_running_app()
@@ -132,7 +96,6 @@ class InfyApp(App):
                 result = round(result, 2)
             results_text += str(result)
         results_area.text = results_text
-        print("new text from root.textarea", self.root.textarea.text, results_text)
 
 
 evaluator = Evaluator()
