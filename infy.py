@@ -101,13 +101,12 @@ class InfyApp(App):
     def text_changed(self, txt):
         results_area = self.root.resultsarea
         doc = grammar.parse(txt)
-        lines = txt.split("\n")
         results = evaluator.eval(doc)
         results_text = ""
         for i, result in enumerate(results):
             if i > 0:
                 results_text += "\n"
-            if len(lines[i].strip()) == 0:  # avoid "0" on empty lines
+            if result is None:
                 continue
             if result.__class__.__name__ == 'Quantity':
                 result = result.magnitude

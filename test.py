@@ -5,7 +5,7 @@ ev = Evaluator()
 
 ast = grammar.parse("make")
 assert(find_text(ast, "var") == "make")
-assert(ev.eval(ast)[0] == 0)
+assert(ev.eval(ast)[0] is None)
 
 ast = grammar.parse("5")
 assert(find_text(ast, "expr") == "5")
@@ -78,7 +78,7 @@ ast = grammar.parse("""rent is 500 per month
     sum = bar - foo / 2
     tax = sum*20%""")
 ev.reset()
-assert(ev.eval(ast) == [Q_(500, '1 / month'), 10, 0, 15, 0, 10.0, 2.0])
+assert(ev.eval(ast) == [Q_(500, '1 / month'), 10, None, 15, None, 10.0, 2.0])
 assert(ev.variables == {"foo": 10, "bar": 15, "sum": 10.0, "tax": 2.0})
 
 ast = grammar.parse("5 liters in cubic centimeters")
@@ -86,11 +86,9 @@ epsilon = 0.0001
 assert(5000 - ev.eval(ast)[0].magnitude < epsilon)
 
 ast = grammar.parse("this year tax_rate = 20% of profits")
-print(ast)
 assert(find_text(ast, "text") == "this year")
 assert(find_text(ast, "assign") == " tax_rate = 20%")
 assert(find_text(ast, "eol") == " of profits")
 ev.reset()
-print(ev.eval(ast))
 assert(ev.eval(ast) == [Q_(0.20)])
 assert(ev.get('tax_rate') == Q_('0.20'))
