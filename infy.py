@@ -5,6 +5,9 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.widget import Widget
 from kivy.uix.popup import Popup
 from kivy.uix.button import Button
+from kivy.uix.actionbar import ActionButton
+from kivy.uix.codeinput import CodeInput
+from kivy.uix.scrollview import ScrollView
 from kivy.config import Config
 from kivy.properties import ObjectProperty, ListProperty
 from plyer import filechooser
@@ -12,15 +15,12 @@ from plyer import filechooser
 from grammar import grammar
 from evaluator import Evaluator
 
-Config.set('graphics', 'width', '1200')
-Config.set('graphics', 'height', '900')
-
 
 class Line(Widget):
     pass
 
 
-class LoadButton(Button):
+class LoadButton(ActionButton):
     '''
     Button that triggers 'filechooser.open_file()' and processes
     the data response from filechooser Activity.
@@ -82,8 +82,24 @@ class SaveButton(Button):
         app.save(self.selection[0])
 
 
+class CustomScrollView(ScrollView):
+    def on_scroll_y(self, y, e):
+        print('scrlv.on_scroll_y', y, e)
+
+class TypeInput(CodeInput):
+    def on_cursor(self, a, b):
+        print('row', self.cursor_row, len(self._lines))
+        super(CodeInput, self).on_cursor(a, b)
+        if self.cursor_row == len(self._lines) - 1:
+            app = App.get_running_app()
+            app.root.scrlv.scroll_y = 0
+
+
 class InfyApp(App):
     filepath = None
+
+    def build(self):
+        self.icon = './assets/lean.svg'
 
     def load(self, filepath):
         with open(filepath) as stream:
