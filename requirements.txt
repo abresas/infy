@@ -6,16 +6,14 @@
 #
 certifi==2019.6.16        # via requests
 chardet==3.0.4            # via requests
-docopt==0.6.2             # via num2words
 docutils==0.14            # via kivy
 idna==2.8                 # via requests
-inflect==2.1.0            # via quantulum3
 kivy-garden==0.1.4        # via kivy
 kivy==1.11.0
-num2words==0.5.10         # via quantulum3
 parsimonious==0.8.1
+pint==0.9
+plyer==1.4.0
 pygments==2.4.2           # via kivy
-quantulum3==0.7.1
 requests==2.22.0          # via kivy-garden
 six==1.12.0               # via parsimonious
 urllib3==1.25.3           # via requests
