@@ -1,16 +1,18 @@
+#!/usr/bin/env python3
 import os
+from pkg_resources import resource_filename
 
 from kivy.app import App
-from kivy.uix.actionbar import ActionButton
+from kivy.uix.button import Button
 from kivy.uix.codeinput import CodeInput
-from kivy.properties import ListProperty
+from kivy.properties import ListProperty, StringProperty
 from plyer import filechooser
 
-from grammar import grammar
-from evaluator import Evaluator
+from . import grammar
+from . import Evaluator
 
 
-class FileChooseButton(ActionButton):
+class FileChooseButton(Button):
     '''
     Button that triggers 'filechooser.open_file()' and processes
     the data response from filechooser Activity.
@@ -61,9 +63,15 @@ class TypeInput(CodeInput):
 
 class InfyApp(App):
     filepath = None
+    load_icon = StringProperty()
+    save_icon = StringProperty()
+    white_bg = StringProperty()
 
     def build(self):
-        self.icon = './assets/lean.svg'
+        self.icon = resource_filename(__name__, 'assets/lean.svg')
+        self.load_icon = resource_filename(__name__, 'assets/folder.png')
+        self.save_icon = resource_filename(__name__, 'assets/save.png')
+        self.white_bg = resource_filename(__name__, 'assets/white.png')
 
     def load(self, filepath):
         with open(filepath) as stream:
@@ -98,7 +106,8 @@ class InfyApp(App):
         results_area.text = results_text
 
 
-evaluator = Evaluator()
-
-if __name__ == "__main__":
+def run():
     InfyApp().run()
+
+
+evaluator = Evaluator()

@@ -1,6 +1,7 @@
 from parsimonious.nodes import NodeVisitor
-from grammar import find_text
 from pint import UnitRegistry, DimensionalityError
+
+from . import find_text
 
 ureg = UnitRegistry()
 Q_ = ureg.Quantity

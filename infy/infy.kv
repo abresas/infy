@@ -34,23 +34,20 @@ FloatLayout:
         pos: root.width-240, 20
         size: 100, 100
         size_hint: None, None
-        background_down: 'assets/folder.png'
-        background_normal: 'assets/folder.png'
+        background_down: app.load_icon
+        background_normal: app.load_icon
     SaveButton:
         pos: root.width-120, 20
         size: 100, 100
         size_hint: None, None
-        background_down: 'assets/save.png'
-        background_normal: 'assets/save.png'
-
-<LoadButton, SaveButton>:
-    size: 200, 200
+        background_down: app.save_icon
+        background_normal: app.save_icon
 
 <TextInput, CodeInput>:
     font_size: 40
     font_name: 'RobotoMono-Regular'
-    background_normal: 'assets/white.png'
-    background_active: 'assets/white.png'
+    background_normal: app.white_bg
+    background_active: app.white_bg
     text_height: self.height - (len(self._lines)-1) * self.line_height - 55
     multiple: False
     filter: ["*.txt", "*.md"]
