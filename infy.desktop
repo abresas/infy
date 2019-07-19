@@ -1,0 +1,8 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Name=Infy
+Comment=Mathematical notes
+Exec=infy
+Icon=/usr/lib/python3.7/site-packages/infy/assets/lean.svg
+Terminal=false

@@ -11,6 +11,7 @@ setup(
         'pint>=0.9',
         'plyer>=1.4.0',
     ],
+    scripts=['bin/infy'],
     entry_points={
     },
     author="Alexios Brezas",
