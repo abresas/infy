@@ -4,16 +4,31 @@
 #
 #    pip-compile requirements.in
 #
-certifi==2019.6.16        # via requests
-chardet==3.0.4            # via requests
-docutils==0.14            # via kivy
-idna==2.8                 # via requests
-kivy-garden==0.1.4        # via kivy
+certifi==2019.6.16
+    # via requests
+chardet==3.0.4
+    # via requests
+docutils==0.14
+    # via kivy
+funcsigs==1.0.2
+    # via pint
+idna==2.8
+    # via requests
+kivy-garden==0.1.4
+    # via kivy
 kivy==1.11.0
+    # via -r requirements.in
 parsimonious==0.8.1
+    # via -r requirements.in
 pint==0.9
+    # via -r requirements.in
 plyer==1.4.0
-pygments==2.4.2           # via kivy
-requests==2.22.0          # via kivy-garden
-six==1.12.0               # via parsimonious
-urllib3==1.25.3           # via requests
+    # via -r requirements.in
+pygments==2.4.2
+    # via kivy
+requests==2.22.0
+    # via kivy-garden
+six==1.12.0
+    # via parsimonious
+urllib3==1.25.8
+    # via requests
